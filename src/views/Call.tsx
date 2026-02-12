@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
-import { createAttendee } from '../api/client';
+import { createAttendee, apiBase } from '../api/client';
 import type { ChimeMeetingInfo, ChimeAttendeeInfo } from '../api/client';
 import { useChime } from '../hooks/useChime';
 import { useLiveTranscription } from '../hooks/useLiveTranscription';
@@ -70,7 +70,7 @@ export default function Call({
     let cancelled = false;
     (async () => {
       try {
-        const res = await fetch(`/api/chime/meeting/${meetingId}`);
+        const res = await fetch(`${apiBase}/api/chime/meeting/${meetingId}`);
         if (res.ok) {
           const data = await res.json();
           if (!cancelled) setMeetingInfo(data);

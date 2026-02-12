@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { apiBase } from '../api/client';
 
 interface HomeProps {
   onStartMeeting: (meetingId: string, externalMeetingId: string) => void;
@@ -25,7 +26,7 @@ export default function Home({
     setError('');
     setLoading(true);
     try {
-      const res = await fetch('/api/chime/meeting', {
+      const res = await fetch(`${apiBase}/api/chime/meeting`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({}),

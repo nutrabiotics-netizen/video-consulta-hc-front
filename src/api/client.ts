@@ -1,8 +1,8 @@
-// Backend en Railway. En dev (npm run dev) BASE = '' y Vite hace proxy a localhost.
+// Backend: por defecto Railway. Para dev con backend local: VITE_API_URL=http://localhost:6000 en .env
 const RAILWAY_BACKEND = 'https://video-consulta-hc-back-production.up.railway.app';
-const BASE =
-  (import.meta as any).env?.VITE_API_URL ||
-  ((import.meta as any).env?.PROD ? RAILWAY_BACKEND : '');
+const envApi = (import.meta as any).env?.VITE_API_URL;
+export const apiBase = typeof envApi === 'string' && envApi.length > 0 ? envApi : RAILWAY_BACKEND;
+const BASE = apiBase;
 
 export async function createMeeting(): Promise<{
   meetingId: string;
