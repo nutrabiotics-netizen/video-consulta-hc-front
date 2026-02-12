@@ -4,16 +4,16 @@
 
 import { useEffect, useRef, useState, useCallback } from 'react';
 
+const RAILWAY_WS = 'wss://video-consulta-hc-back-production.up.railway.app/ws';
+
 const getWsUrl = () => {
   const env = (import.meta as any).env?.VITE_WS_URL;
   if (env) {
     const url = env.startsWith('http') ? env.replace(/^http/, 'ws') : env.replace(/^https/, 'wss');
     return url.endsWith('/ws') ? url : `${url.replace(/\/$/, '')}/ws`;
   }
-  // Si el front está en Vercel, WS debe ir al backend en Railway (Vercel no soporta WebSocket)
-  if (typeof window !== 'undefined' && window.location?.hostname?.includes('vercel.app')) {
-    return 'wss://video-consulta-hc-back-production.up.railway.app/ws';
-  }
+  // En producción (build) sin VITE_WS_URL → Railway. En dev → mismo origen (proxy).
+  if ((import.meta as any).env?.PROD) return RAILWAY_WS;
   const proto = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
   const host = (import.meta as any).env?.DEV ? 'localhost:5173' : window.location.host;
   return `${proto}//${host}/ws`;

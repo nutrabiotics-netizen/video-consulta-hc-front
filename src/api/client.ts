@@ -1,13 +1,8 @@
-// API: VITE_API_URL o, si el front está en Vercel, backend en Railway por defecto (evita NOT_FOUND en /api)
-const getApiBase = (): string => {
-  const env = (import.meta as any).env?.VITE_API_URL;
-  if (env) return env;
-  if (typeof window !== 'undefined' && window.location?.hostname?.includes('vercel.app')) {
-    return 'https://video-consulta-hc-back-production.up.railway.app';
-  }
-  return '';
-};
-const BASE = getApiBase();
+// Backend en Railway. En dev (npm run dev) BASE = '' y Vite hace proxy a localhost.
+const RAILWAY_BACKEND = 'https://video-consulta-hc-back-production.up.railway.app';
+const BASE =
+  (import.meta as any).env?.VITE_API_URL ||
+  ((import.meta as any).env?.PROD ? RAILWAY_BACKEND : '');
 
 export async function createMeeting(): Promise<{
   meetingId: string;
