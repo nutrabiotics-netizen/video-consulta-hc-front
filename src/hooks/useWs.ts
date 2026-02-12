@@ -5,11 +5,14 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 
 const getWsUrl = () => {
-  // Vercel no soporta WebSocket: usar VITE_WS_URL (ej. backend en Railway/Render) o mismo origen si hay servidor WS
-  const base = (import.meta as any).env?.VITE_WS_URL;
-  if (base) {
-    const url = base.startsWith('http') ? base.replace(/^http/, 'ws') : base.replace(/^https/, 'wss');
+  const env = (import.meta as any).env?.VITE_WS_URL;
+  if (env) {
+    const url = env.startsWith('http') ? env.replace(/^http/, 'ws') : env.replace(/^https/, 'wss');
     return url.endsWith('/ws') ? url : `${url.replace(/\/$/, '')}/ws`;
+  }
+  // Si el front está en Vercel, WS debe ir al backend en Railway (Vercel no soporta WebSocket)
+  if (typeof window !== 'undefined' && window.location?.hostname?.includes('vercel.app')) {
+    return 'wss://video-consulta-hc-back-production.up.railway.app/ws';
   }
   const proto = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
   const host = (import.meta as any).env?.DEV ? 'localhost:5173' : window.location.host;
